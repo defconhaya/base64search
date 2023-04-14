@@ -1,50 +1,24 @@
 import base64
 import sys
+import re
 
 # https://www.leeholmes.com/searching-for-content-in-base-64-strings/
 
-def display(line, nth):    
-    res =  [line[i:i+nth] for i in range(0, len(line), nth)]
-    for x in res:
-        print("{} ".format(x),end =" ")
-    print()
 
 def enc(input):
-    return base64.b64encode(input.encode('ascii')).decode('ascii')
+    return base64.b64encode(input.encode('utf-8')).decode('utf-8')
 
-def print_bin(input):
-     return ''.join(format(ord(x), 'b') for x in input)
-
-def pr_mut(input):    
-    print("{}\t{}\t{} ".format(input, enc(input), print_bin(enc(input))))
-    for x in range(0, 10):
-        v = "{}{}".format(x , input)
-        print("{}\t{}\t{} ".format(v,enc(v), print_bin(enc(v))))
-
-
+def trim_padding(input):
+    reobj = re.compile("=+?")
+    match = reobj.search(input)
+    if match:
+        return input[:match.start()-1] 
+    else:
+        return input
 
 input = sys.argv[1]
-pr_mut(input)
-v1 = "0" + input
-v2 = input + "0"
+print(input)
+regex2 = "({}|{}|{})".format(trim_padding(enc(input)), trim_padding(enc("0"+ input)), trim_padding(enc("00" + input)))
 
 
-b64 = base64.b64encode(input.encode('ascii')).decode('ascii')
-b64_1 = base64.b64encode(v1.encode('ascii')).decode('ascii')
-b64_2 = base64.b64encode(v2.encode('ascii')).decode('ascii')
-
-print (" ".join("{:02x}".format(ord(c)) for c in b64))
-bin1 = ''.join(format(ord(x), 'b') for x in b64)
-bin2 = ''.join(format(ord(x), 'b') for x in input)
-bv1 = ''.join(format(ord(x), 'b') for x in b64_1)
-bv2 = ''.join(format(ord(x), 'b') for x in b64_2)
-
-print(bin1)
-print (bv1)
-print (bv2)
-# print ("{}:\t\t".format(input), end=' ')
-# display(bin2,7)
-# print ("{}:\t".format(b64), end=' ')
-# display(bin1,6)
-# print("\t{}".format(bin1))
-
+print(regex2)
