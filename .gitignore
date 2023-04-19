@@ -1,3 +1,4 @@
 tests/*
 base64search/*
 *.ps1
+base64search.code-workspace
