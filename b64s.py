@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 import argparse
 import base64
-import sys
 import os
 import re
 
@@ -17,6 +16,9 @@ def trim_padding(input):
     else:
         return input
 
+def highlight(sentence, word):
+    return re.sub(f"({word})", r"\033[4m\033[1;32m\1\033[m", sentence)
+
 def search_pattern_in_files(dir_path, ext, pattern):
     """
     Searches for a regular expression pattern in all files with a specified extension in a directory and its subdirectories.
@@ -29,7 +31,9 @@ def search_pattern_in_files(dir_path, ext, pattern):
                 with open(file_path, 'r') as f:
                     for line_number, line in enumerate(f):
                         if regex.search(line):
-                            print(f"Found pattern in file: {file_path} (line {line_number+1}): {line.strip()}")
+                            print(f"Found pattern in file: {file_path} (line {line_number+1}):  {highlight (line.strip(), pattern)}")
+
+                
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Search for a regular expression pattern in all files with a specified extension in a directory and its subdirectories.')
